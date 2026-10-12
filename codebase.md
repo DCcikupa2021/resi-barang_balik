@@ -1,6 +1,6 @@
 # Codebase Backup
 
-_Auto-generated oleh `tools/backup_codebase.py` — 2026-10-12 16:29:23_
+_Auto-generated oleh `tools/backup_codebase.py` — 2026-10-12 16:30:12_
 
 > **Jangan edit file ini manual.** Jalankan ulang script setiap ada perubahan kode:
 > `python tools/backup_codebase.py`
@@ -837,7 +837,7 @@ gid 1625321251), Supabase Project 1 (`bpyoeudcvpwrofllwfdd`) terverifikasi koson
       "id": 3,
       "date": "2026-10-12",
       "type": "fix",
-      "description": "Backup codebase kebaca folder .venv (436 file) - tambahkan .venv/venv/.cache ke EXCLUDE_DIRS di tools/backup_codebase.py, buat .gitignore, regenerate codebase.md (16 file bersih).",
+      "description": "Backup codebase kebaca folder .venv (436 file) - tambahkan .venv/venv/.cache ke EXCLUDE_DIRS di tools/backup_codebase.py, buat .gitignore (tanpa meng-ignore dirinya sendiri), regenerate codebase.md (16 file bersih).",
       "files": [
         "tools/backup_codebase.py",
         ".gitignore",
