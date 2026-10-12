@@ -19,6 +19,7 @@
   const INDEX = new Map();
   let lastSync = "";
   let cariSedangJalan = false;
+  let lastLoadAt = 0;
   let scanner = null;
 
   const $ = (s) => document.querySelector(s);
@@ -52,20 +53,23 @@
     return res.json();
   }
 
+  /** Masukkan 1 baris ke index in-memory (dipakai buildIndex & fallback cariLangsung) */
+  function indexRow(row) {
+    for (const [kol, label] of KEY_KOLOM) {
+      const k = norm(row[kol]);
+      if (!k) continue;
+      if (!INDEX.has(k)) INDEX.set(k, []);
+      const arr = INDEX.get(k);
+      if (!arr.some((h) => h.row.id === row.id)) arr.push({ row: row, source: label });
+    }
+    if (row.updated_at && row.updated_at > lastSync) lastSync = row.updated_at;
+  }
+
   /** Susun index in-memory dari 3 kolom scan */
   function buildIndex(rows) {
     INDEX.clear();
     lastSync = "";
-    for (const row of rows) {
-      if (row.updated_at && row.updated_at > lastSync) lastSync = row.updated_at;
-      for (const [kol, label] of KEY_KOLOM) {
-        const k = norm(row[kol]);
-        if (!k) continue;
-        if (!INDEX.has(k)) INDEX.set(k, []);
-        const arr = INDEX.get(k);
-        if (!arr.some((h) => h.row.id === row.id)) arr.push({ row: row, source: label });
-      }
-    }
+    for (const row of rows) indexRow(row);
     renderInfoSync(rows.length);
   }
 
@@ -99,6 +103,7 @@
     try {
       const rows = await fetchRows();
       buildIndex(rows);
+      lastLoadAt = Date.now();
       if (!silent) Swal.close();
       return true;
     } catch (err) {
@@ -119,6 +124,38 @@
   /** Cari exact-match (sudah dinormalisasi) di index */
   function cari(q) {
     return INDEX.get(norm(q)) || [];
+  }
+
+  /** Kolom mana yang value-nya cocok (buat label "Ketemu di") */
+  function sumberKolom(row, v) {
+    for (const [kol, label] of KEY_KOLOM) {
+      if (norm(row[kol]) === v) return label;
+    }
+    return "-";
+  }
+
+  /**
+   * Fallback: tanya Supabase LANGSUNG kalau nggak ada di index lokal
+   * (data baru disync setelah app dibuka / app lama kebuka).
+   * ilike tanpa wildcard = exact case-insensitive.
+   */
+  async function cariLangsung(q) {
+    const v = encodeURIComponent(norm(q));
+    const url =
+      CFG.SUPABASE_URL +
+      "/rest/v1/resi?select=*&or=(no_order.ilike." + v +
+      ",no_resi.ilike." + v +
+      ",resi_barang_balik.ilike." + v + ")";
+    const res = await fetch(url, {
+      headers: {
+        apikey: CFG.SUPABASE_ANON_KEY,
+        Authorization: "Bearer " + CFG.SUPABASE_ANON_KEY,
+      },
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const rows2 = await res.json();
+    rows2.forEach(indexRow); // index lokal ikut ke-update biar scan berikutnya instan
+    return rows2.map((row) => ({ row: row, source: sumberKolom(row, norm(q)) }));
   }
 
   // ====== RENDER BOX 2 ======
@@ -199,7 +236,15 @@
       didOpen: () => Swal.showLoading(),
     });
     if (INDEX.size === 0) await loadData(true); // pastikan data siap (baru buka app)
-    const hits = cari(q);
+    let hits = cari(q);
+    // Fallback: kalau nggak ada di index lokal, tanya Supabase langsung (data terbaru)
+    if (!hits.length) {
+      try {
+        hits = await cariLangsung(q);
+      } catch (err) {
+        console.warn("Fallback cari langsung gagal:", err);
+      }
+    }
     Swal.close();
     tampilkanHasil(hits, q);
     $("#input-resi").value = q;
@@ -272,6 +317,13 @@
 
   // Auto-refresh background (PRD Alur #5)
   setInterval(() => loadData(true), CFG.REFRESH_INTERVAL_MS || 10 * 60 * 1000);
+
+  // Refresh saat tab/PWA kembali aktif — cegah data basi kalau app lama kebuka
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && Date.now() - lastLoadAt > 2 * 60 * 1000) {
+      loadData(true);
+    }
+  });
 
   // PWA: daftarkan service worker (PRD FR-08)
   if ("serviceWorker" in navigator) {

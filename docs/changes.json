@@ -65,7 +65,22 @@
         "codebase.md"
       ],
       "author": "Cline"
+    },
+    {
+      "id": 4,
+      "date": "2026-10-12",
+      "type": "fix",
+      "description": "Resi terbaru tidak muncul di app (index in-memory basi) + jam sync GAS salah zona. Fix: app.js fallback cariLangsung() tanya Supabase langsung via or=(3 kolom ilike) saat tidak ada di index lokal + hasil masuk index; refresh otomatis saat tab aktif kembali (visibilitychange >2 menit); refactor indexRow(). Code.gs guard jam sync dihitung eksplisit Asia/Jakarta (sebelumnya UTC - terdeteksi sync 18.08 WIB). sw.js CACHE v2. Validasi: node --check OK; query ID268211802912C -> 1 baris feedback Berjalan.",
+      "files": [
+        "app.js",
+        "sw.js",
+        "gas/Code.gs",
+        "docs/CHANGELOG.md",
+        "docs/changes.json",
+        "codebase.md"
+      ],
+      "author": "Cline"
     }
   ],
-  "next_id": 4
+  "next_id": 5
 }

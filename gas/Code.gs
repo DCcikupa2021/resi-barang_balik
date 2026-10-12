@@ -60,8 +60,9 @@ function cfg_() {
 
 /** Fungsi utama sinkronisasi — dipanggil trigger onEdit & timer 5 menit */
 function syncSheetToSupabase() {
-  // Guard jam kerja: di luar 08.00-17.00 tidak ada tembakan ke Supabase
-  var jam = new Date().getHours();
+  // Guard jam kerja: di luar 08.00-17.00 WIB tidak ada tembakan ke Supabase.
+  // Dihitung eksplisit WIB (Asia/Jakarta) supaya benar walau timezone project GAS UTC.
+  var jam = parseInt(Utilities.formatDate(new Date(), 'Asia/Jakarta', 'H'), 10);
   if (jam < SYNC_START_HOUR || jam >= SYNC_END_HOUR) {
     Logger.log('Diluar jam sync (jam %s), dilewati.', jam);
     return;

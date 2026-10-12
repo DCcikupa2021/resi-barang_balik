@@ -19,6 +19,34 @@ biar folder virtualenv/cache nggak pernah masuk git. `codebase.md` diregenerasi 
 
 ---
 
+## [2026-10-12] — fix — Resi terbaru nggak muncul (index lokal basi) + jam sync GAS salah zona
+
+**Deskripsi:**
+Laporan: data ADA di Supabase (contoh `ID268211802912C` → feedback "Berjalan") tapi app
+menyatakan tidak ditemukan. Diagnosis: API & DB sehat (test fetch identik dengan app.js →
+HTTP 200); penyebab = index in-memory app diambil saat awal buka, sehingga row yang disync
+setelahnya nggak kelihatan sampai auto-refresh/manual refresh.
+
+Perbaikan:
+- `app.js`: **fallback `cariLangsung()`** — kalau resi nggak ada di index lokal, app
+  langsung tanya Supabase (`or=(no_order.ilike…,no_resi.ilike…,resi_barang_balik.ilike…)`,
+  exact case-insensitive) + hasilnya masuk index lokal (scan berikutnya instan).
+  Diverifikasi: query `ID268211802912C` → 1 baris, feedback "Berjalan".
+- `app.js`: refresh data otomatis saat tab/PWA kembali aktif (`visibilitychange`,
+  data >2 menit) — cegah data basi pada app yang lama terbuka. Refactor `indexRow()`.
+- `gas/Code.gs`: guard jam sync dihitung **eksplisit WIB** (`Asia/Jakarta`) — sebelumnya
+  `new Date().getHours()` ikut timezone project GAS (UTC), dampaknya sync jalan di luar
+  jam kerja (terdeteksi: updated_at 18.08 WIB). **User wajib paste ulang Code.gs.**
+- `sw.js`: naikkan versi cache → `resi-pwa-v2` biar HP yang sudah install PWA dapet update.
+
+**Validasi:**
+`node --check` app.js OK; query fallback REST mengembalikan baris yang benar.
+
+**File terdampak:**
+`app.js`, `sw.js`, `gas/Code.gs`, `docs/CHANGELOG.md`, `docs/changes.json`, `codebase.md`
+
+---
+
 ## [2026-10-12] — feature — Implementasi aplikasi PWA lengkap
 
 **Deskripsi:**

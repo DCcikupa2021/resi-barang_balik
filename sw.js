@@ -6,7 +6,7 @@
  *  - CDN (Tailwind/SweetAlert2/html5-qrcode/Fonts): lewat saja (biar HTTP cache browser)
  * SELALU naikkan versi CACHE saat rilis perubahan!
  */
-const CACHE = "resi-pwa-v1";
+const CACHE = "resi-pwa-v2";
 const SHELL = [
   "./",
   "index.html",
