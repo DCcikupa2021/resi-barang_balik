@@ -1,0 +1,59 @@
+{
+  "project": "resi-barang_balik",
+  "description": "Log perubahan otomatis proyek. Entri WAJIB ditambahkan setiap ada perubahan kode/struktur/alur (lihat .clinerules). Selalu sinkron dengan docs/CHANGELOG.md.",
+  "entry_schema": {
+    "id": "integer, urut naik",
+    "date": "YYYY-MM-DD",
+    "type": "documentation | feature | fix | refactor | config | flow",
+    "description": "string, penjelasan perubahan",
+    "files": ["array file terdampak"],
+    "author": "string"
+  },
+  "log": [
+    {
+      "id": 1,
+      "date": "2026-10-12",
+      "type": "documentation",
+      "description": "Inisialisasi dokumentasi proyek: PRD.md v0.1 (requirements lengkap: tanpa login, scan 3 kolom No Order/No Resi/Resi barang Balik → Feedback, sinkron GAS jam 08.00-17.00 WIB upsert anti-numpuk, responsif 320px+, dark/light mode, SweetAlert2, GitHub Pages), .clinerules (aturan dokumentasi otomatis + stack tetap), struktur.md (peta file), codebase.md (backup via tools/backup_codebase.py), sistem log ganda CHANGELOG.md + changes.json.",
+      "files": [
+        "PRD.md",
+        ".clinerules",
+        "struktur.md",
+        "codebase.md",
+        "docs/CHANGELOG.md",
+        "docs/changes.json",
+        "tools/backup_codebase.py"
+      ],
+      "author": "Cline"
+    },
+    {
+      "id": 2,
+      "date": "2026-10-12",
+      "type": "feature",
+      "description": "Implementasi aplikasi PWA lengkap: tabel Supabase resi via MCP (Project 1 bpyoeudcvpwrofllwfdd, unique no_order, RLS anon read-only), frontend PWA (index.html Tailwind 2 box, app.js index-in-memory scan instan + SweetAlert2 + kamera html5-qrcode + dark mode + auto-refresh 10menit, style.css, config.js), PWA (manifest.json, sw.js cache resi-pwa-v1, 5 ikon PNG via tools/generate_icons.py), gas/Code.gs (sync upsert on_conflict=no_order + dedup + cleanup + guard jam 08-17 WIB + setupTriggers/testSync/doGet), README.md panduan deploy GAS & GitHub Pages, PRD naik v0.2 (FR-08 PWA). Validasi: node --check app.js/sw.js/config.js OK.",
+      "files": [
+        "index.html",
+        "style.css",
+        "app.js",
+        "config.js",
+        "manifest.json",
+        "sw.js",
+        "icons/icon-192.png",
+        "icons/icon-512.png",
+        "icons/icon-maskable-512.png",
+        "icons/apple-touch-icon.png",
+        "icons/favicon-32.png",
+        "supabase/schema.sql",
+        "gas/Code.gs",
+        "README.md",
+        "tools/generate_icons.py",
+        "PRD.md",
+        "docs/CHANGELOG.md",
+        "docs/changes.json",
+        "struktur.md"
+      ],
+      "author": "Cline"
+    }
+  ],
+  "next_id": 3
+}

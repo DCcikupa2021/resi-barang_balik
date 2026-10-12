@@ -1,0 +1,53 @@
+/* style.css — override & komponen khusus (di-load setelah Tailwind CDN) */
+
+/* === Transisi tema: halus tapi nggak bikin animasi aneh saat scroll === */
+body { transition: background-color .25s ease, color .25s ease; }
+
+/* === SweetAlert2 senada tema (PRD FR-06) === */
+.swal2-popup {
+  border-radius: 1.25rem !important;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif !important;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / .25);
+  border: 1px solid rgb(148 163 184 / .25);
+}
+.swal2-title { font-weight: 800 !important; }
+.swal2-confirm { border-radius: .9rem !important; font-weight: 700 !important; }
+html.dark .swal2-popup { background: #1e293b; color: #f1f5f9; }
+html.dark .swal2-title { color: #f8fafc; }
+html.dark .swal2-html-container { color: #cbd5e1; }
+html.dark .swal2-icon { background: transparent; }
+
+/* === Animasi kemunculan hasil === */
+@keyframes hasil-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.hasil-baru { animation: hasil-in .25s ease-out; }
+
+/* === Panel kamera html5-qrcode === */
+#reader { background: #000; }
+#reader video { width: 100% !important; border-radius: 0; }
+#reader__scan_region { min-height: 220px; background: transparent; }
+#reader img[alt="Info icon"] { display: none !important; } /* sembunyikan ikon izin bawaan */
+#reader__dashboard {
+  background: rgb(15 23 42 / .85) !important;
+  border-radius: 0 0 1rem 1rem;
+  padding: .5rem !important;
+}
+#reader__dashboard button {
+  border-radius: .75rem !important;
+  min-height: 40px;
+  background: #6366f1 !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+#reader__dashboard span, #reader__dashboard select, #reader__dashboard input {
+  color: #e2e8f0 !important;
+}
+
+/* === Safe area HP (notch/bilah bawah) === */
+footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); }
+
+/* === Input resi: teks panjang tetap kebaca (PRD FR-05) === */
+#input-resi { max-width: 100%; }

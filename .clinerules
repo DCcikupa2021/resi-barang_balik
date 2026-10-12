@@ -1,0 +1,43 @@
+# .clinerules — Aturan Kerja Proyek resi-barang_balik
+
+## 1. Wajib baca sebelum ubah kode
+1. `PRD.md` — requirements & keputusan desain.
+2. `struktur.md` — peta file.
+3. `docs/CHANGELOG.md` — riwayat perubahan terakhir.
+
+## 2. Dokumentasi OTOMATIS (wajib setiap ada perubahan)
+Setiap kali mengubah **kode, struktur, atau alur aplikasi**, WAJIB dalam satu sesi yang sama:
+1. Append entri ke `docs/CHANGELOG.md` (tanggal, tipe, deskripsi, file terdampak).
+2. Append entri identik ke `docs/changes.json` (array `log`, field: `id`, `date`, `type`,
+   `description`, `files`, `author`). Format JSON harus valid.
+3. Struktur file berubah? → perbarui `struktur.md`.
+4. Regenerasi backup kode: jalankan `python tools/backup_codebase.py`
+   (menulis ulang `codebase.md` — **jangan edit codebase.md manual**).
+5. Requirements berubah? → perbarui `PRD.md` + naikkan versi PRD.
+   Jenis tipe entri: `documentation` | `feature` | `fix` | `refactor` | `config` | `flow`.
+
+**Jangan pernah mengubah kode tanpa memperbarui dokumentasi.**
+
+## 3. Aturan teknis (stack tetap — jangan diganti tanpa diskusi)
+- **HTML + Tailwind Play CDN + vanilla JS. Tanpa build step, tanpa framework**
+  (React/Vue/Next/dll dilarang).
+- Library hanya dari CDN yang sudah ditetapkan: **SweetAlert2**, **html5-qrcode**,
+  **Tailwind**, **Google Fonts (Plus Jakarta Sans)**.
+- `config.js` hanya berisi URL + anon/publishable key Supabase.
+  **JANGAN PERNAH** menaruh service role key di file frontend.
+- Kunci unik anti-duplikasi Supabase: kolom **`no_order`**
+  (upsert `on_conflict=no_order`, `Prefer: resolution=merge-duplicates`).
+- Pencarian cocok ke kolom: **`no_order`, `no_resi`, `resi_barang_balik`**
+  (case-insensitive, trim). Hasil ditampilkan dari kolom **`feedback`**.
+- Sinkron GAS **hanya 08.00–17.00** (`SYNC_START_HOUR`/`SYNC_END_HOUR` di `Code.gs`).
+- Tailwind dark mode: **strategy `class`**; persist di localStorage.
+- Responsif minimal **320px**; tanpa fixed height (`min-h-dvh`); teks panjang `break-all`.
+- SweetAlert2 dipakai untuk **semua** state loading/hasil/error.
+- Bahasa dokumen & komunikasi: **Indonesia**. Komentar kode: Indonesia ringkas.
+- Hosting: **GitHub Pages** (HTTPS). Data source: Google Sheet tab "All" gid `1625321251`.
+
+## 4. Konvensi kode
+- Satu file JS/CSS statis per fungsi (lihat `struktur.md`); jangan bikin bundler.
+- Konsisten pakai prefix class Tailwind + helper kecil di `app.js`
+  (mis. `esc()` untuk escaping HTML).
+- Selesai edit → verifikasi: buka `index.html`, test scan manual + kamera bila memungkinkan.
