@@ -7,6 +7,18 @@
 
 ---
 
+## [2026-10-12] — fix — Backup codebase kebaca folder .venv
+
+**Deskripsi:**
+`tools/backup_codebase.py` ikut membackup isi `.venv/` (436 file, kebanyakan pip).
+Diperbaiki: `.venv`, `venv`, `.cache` ditambahkan ke `EXCLUDE_DIRS`; ditambah `.gitignore`
+biar folder virtualenv/cache nggak pernah masuk git. `codebase.md` diregenerasi (16 file).
+
+**File terdampak:**
+`tools/backup_codebase.py`, `.gitignore`, `codebase.md`
+
+---
+
 ## [2026-10-12] — feature — Implementasi aplikasi PWA lengkap
 
 **Deskripsi:**

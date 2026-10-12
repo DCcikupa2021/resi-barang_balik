@@ -14,7 +14,8 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT = os.path.join(ROOT, "codebase.md")
 
-EXCLUDE_DIRS = {".git", "node_modules", "__pycache__", ".vscode", ".idea", ".cline"}
+EXCLUDE_DIRS = {".git", "node_modules", "__pycache__", ".vscode", ".idea", ".cline",
+                ".venv", "venv", ".cache"}
 EXCLUDE_FILES = {"codebase.md"}
 INCLUDE_EXT = {".md", ".js", ".css", ".html", ".json", ".py", ".gs", ".sql",
                ".txt", ".yml", ".yaml"}

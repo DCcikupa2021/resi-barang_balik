@@ -53,7 +53,19 @@
         "struktur.md"
       ],
       "author": "Cline"
+    },
+    {
+      "id": 3,
+      "date": "2026-10-12",
+      "type": "fix",
+      "description": "Backup codebase kebaca folder .venv (436 file) - tambahkan .venv/venv/.cache ke EXCLUDE_DIRS di tools/backup_codebase.py, buat .gitignore, regenerate codebase.md (16 file bersih).",
+      "files": [
+        "tools/backup_codebase.py",
+        ".gitignore",
+        "codebase.md"
+      ],
+      "author": "Cline"
     }
   ],
-  "next_id": 3
+  "next_id": 4
 }
